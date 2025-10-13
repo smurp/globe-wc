@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobeWC Demo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script type="module" src="../src/globe-wc.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        h1 {
+            text-align: center;
+            color: #4a9eff;
+        }
+        .demo-section {
+            max-width: 1200px;
+            margin: 30px auto;
+            background: #16213e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h2 {
+            color: #4a9eff;
+            border-bottom: 2px solid #4a9eff;
+            padding-bottom: 10px;
+        }
+        globe-wc {
+            display: block;
+            margin: 20px auto;
+            border: 2px solid #4a9eff;
+            border-radius: 8px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        button {
+            background: #4a9eff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .output {
+            background: #0f1624;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-top: 10px;
+            min-height: 60px;
+        }
+        .event-log {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #0f1624;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .event-item {
+            margin: 5px 0;
+            padding: 5px;
+            background: #1a2332;
+            border-left: 3px solid #4a9eff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌍 GlobeWC Web Component Demo</h1>
+    
+    <div class="demo-section">
+        <h2>Basic Globe</h2>
+        <p>Interactive 3D globe with graticule. Drag to rotate, scroll to zoom.</p>
+        <globe-wc id="basic-globe" width="600" height="600"></globe-wc>
+    </div>
+
+    <div class="demo-section">
+        <h2>Programmatic Control</h2>
+        <globe-wc id="controlled-globe" width="600" height="600"></globe-wc>
+        <div class="controls">
+            <button onclick="addUSA()">Add USA</button>
+            <button onclick="addUK()">Add UK</button>
+            <button onclick="addAustralia()">Add Australia</button>
+            <button onclick="addChina()">Add China</button>
+            <button onclick="addBrazil()">Add Brazil</button>
+            <button onclick="removeAll()">Remove All</button>
+            <button onclick="rotateToUSA()">Rotate to USA</button>
+            <button onclick="resetView()">Reset View</button>
+            <button onclick="listCountries()">List Countries</button>
+        </div>
+        <div class="output" id="output"></div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Event Monitoring</h2>
+        <globe-wc id="event-globe" width="600" height="600"></globe-wc>
+        <h3>Event Log:</h3>
+        <div id="event-log" class="event-log"></div>
+    </div>
+
+    <script>
+        const controlledGlobe = document.getElementById('controlled-globe');
+        const eventGlobe = document.getElementById('event-globe');
+        const output = document.getElementById('output');
+        const eventLog = document.getElementById('event-log');
+        
+        const countries = {
+            usa: { name: 'United States', color: 0xff0000, lat: 40, lng: -100, size: 10 },
+            uk: { name: 'United Kingdom', color: 0x0000ff, lat: 51.5, lng: 0, size: 8 },
+            australia: { name: 'Australia', color: 0x00ff00, lat: -25, lng: 135, size: 15 },
+            china: { name: 'China', color: 0xffff00, lat: 35, lng: 105, size: 12 },
+            brazil: { name: 'Brazil', color: 0xff00ff, lat: -10, lng: -55, size: 11 }
+        };
+        
+        function addUSA() {
+            controlledGlobe.addCountry(countries.usa);
+        }
+        
+        function addUK() {
+            controlledGlobe.addCountry(countries.uk);
+        }
+        
+        function addAustralia() {
+            controlledGlobe.addCountry(countries.australia);
+        }
+        
+        function addChina() {
+            controlledGlobe.addCountry(countries.china);
+        }
+        
+        function addBrazil() {
+            controlledGlobe.addCountry(countries.brazil);
+        }
+        
+        function removeAll() {
+            const allCountries = controlledGlobe.getCountries();
+            allCountries.forEach(name => controlledGlobe.removeCountry(name));
+            output.textContent = 'All countries removed';
+        }
+        
+        function rotateToUSA() {
+            controlledGlobe.rotateTo(40, -100);
+            output.textContent = 'Rotated to USA (40°N, 100°W)';
+        }
+        
+        function resetView() {
+            controlledGlobe.reset();
+            output.textContent = 'View reset';
+        }
+        
+        function listCountries() {
+            const list = controlledGlobe.getCountries();
+            output.textContent = 'Countries: ' + (list.length ? list.join(', ') : 'none');
+        }
+        
+        function logEvent(eventName, detail) {
+            const item = document.createElement('div');
+            item.className = 'event-item';
+            const timestamp = new Date().toLocaleTimeString();
+            item.textContent = `[${timestamp}] ${eventName}: ${JSON.stringify(detail)}`;
+            eventLog.insertBefore(item, eventLog.firstChild);
+            
+            while (eventLog.children.length > 20) {
+                eventLog.removeChild(eventLog.lastChild);
+            }
+        }
+        
+        eventGlobe.addEventListener('globe-initialized', (e) => {
+            logEvent('globe-initialized', e.detail);
+        });
+        
+        eventGlobe.addEventListener('country-added', (e) => {
+            logEvent('country-added', e.detail);
+        });
+        
+        eventGlobe.addEventListener('country-removed', (e) => {
+            logEvent('country-removed', e.detail);
+        });
+    </script>
+</body>
+</html>

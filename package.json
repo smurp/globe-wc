@@ -1,0 +1,51 @@
+{
+  "name": "@mmmlib/globe-wc",
+  "version": "0.1.0",
+  "description": "A ThreeJS-based 3D globe web component for visualizing geopolitical data. Part of the MMM/ThinkerToys ecosystem.",
+  "main": "dist/globe-wc.js",
+  "module": "src/globe-wc.js",
+  "type": "module",
+  "files": [
+    "dist/",
+    "src/",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npm run build:minify",
+    "build:minify": "terser src/globe-wc.js -o dist/globe-wc.min.js --compress --mangle",
+    "dev": "npx http-server . -p 8002 -c-1",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smurp/globe-wc.git"
+  },
+  "keywords": [
+    "web-components",
+    "webcomponents",
+    "threejs",
+    "globe",
+    "geopolitical",
+    "visualization",
+    "geography",
+    "countries",
+    "mmm",
+    "thinkertoys",
+    "custom-elements"
+  ],
+  "author": "smurp",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/smurp/globe-wc/issues"
+  },
+  "homepage": "https://github.com/smurp/globe-wc#readme",
+  "devDependencies": {
+    "terser": "^5.19.0"
+  },
+  "peerDependencies": {
+    "three": "^0.128.0"
+  }
+}
