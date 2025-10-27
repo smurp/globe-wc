@@ -3,7 +3,7 @@
  * A ThreeJS-based 3D globe for visualizing geopolitical data
  * @customElement globe-wc
  */
-class GlobeWC extends HTMLElement {
+export class GlobeWC extends HTMLElement {
   static get observedAttributes() {
     return ['width', 'height', 'rotate', 'auto-rotate'];
   }
@@ -462,4 +462,3 @@ class GlobeWC extends HTMLElement {
 
 customElements.define('globe-wc', GlobeWC);
 
-export default GlobeWC;
