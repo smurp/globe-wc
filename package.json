@@ -1,5 +1,5 @@
 {
-  "name": "globe-wc",
+  "name": "@ttyoys/globe-wc",
   "version": "0.1.1",
   "description": "A ThreeJS-based 3D globe web component for visualizing geopolitical data. Part of the MMM/ThinkerToys ecosystem.",
   "main": "dist/globe-wc.js",
